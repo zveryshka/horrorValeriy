@@ -991,9 +991,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e31ff034d7d00846bd0c03079c4c9d3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  slider: {fileID: 251519242}
   speed: 15
   gravity: -9.81
   mouseSensitivity: 100
+  stamina: 1
 --- !u!95 &1624580773
 Animator:
   serializedVersion: 5
