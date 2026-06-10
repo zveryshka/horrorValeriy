@@ -84,21 +84,17 @@ public class Enemy : MonoBehaviour
 
     void GoToRandomPoint()
     {
-        for (int i = 0; i < 30; i++)
+        Debug.Log("Шукаю нову точку");
+
+        Vector3 randomPoint = transform.position +
+            new Vector3(Random.Range(-20f, 20f), 0, Random.Range(-20f, 20f));
+
+        NavMeshHit hit;
+
+        if (NavMesh.SamplePosition(randomPoint, out hit, 20f, NavMesh.AllAreas))
         {
-            Vector3 randomPoint = new Vector3(
-                Random.Range(-50f, 50f),
-                0,
-                Random.Range(-50f, 50f)
-            );
-
-            NavMeshHit hit;
-
-            if (NavMesh.SamplePosition(randomPoint, out hit, 5f, NavMesh.AllAreas))
-            {
-                agent.SetDestination(hit.position);
-                return;
-            }
+            Debug.Log("Точка знайдена: " + hit.position);
+            agent.SetDestination(hit.position);
         }
     }
 

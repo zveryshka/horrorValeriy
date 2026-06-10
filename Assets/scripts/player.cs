@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class player : MonoBehaviour
 {
@@ -14,6 +16,8 @@ public class player : MonoBehaviour
     public float gravity = -9.81f;
     public float mouseSensitivity = 100f;
     public float jumpForce = 0.5f;
+    public GameObject screamer;
+    public AudioSource screamerSound;
 
 
     private Vector3 velocity;
@@ -57,5 +61,30 @@ public class player : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
 
     }
-    
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.CompareTag("Enemy"))
+        {
+            StartCoroutine(Death());
+        }
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Enemy"))
+        {
+            StartCoroutine(Death());
+        }
+    }
+
+    IEnumerator Death()
+    {
+        screamer.SetActive(true);
+        screamerSound.Play();
+
+        yield return new WaitForSeconds(1f);
+
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
+
 }
