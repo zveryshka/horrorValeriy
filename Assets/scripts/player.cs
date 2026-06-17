@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -10,14 +9,15 @@ public class player : MonoBehaviour
     
     CharacterController controller;
     Animator animator;
-  
 
+    [SerializeField] Slider slider;
     public float speed = 10f;
     public float gravity = -9.81f;
     public float mouseSensitivity = 100f;
     public float jumpForce = 0.5f;
     public GameObject screamer;
     public AudioSource screamerSound;
+    public float stamina = 1f;
 
 
     private Vector3 velocity;
@@ -26,6 +26,7 @@ public class player : MonoBehaviour
     {
         MovePlayer();
         transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime);
+        Stamina();
     }
 
     private void Awake()
@@ -36,11 +37,23 @@ public class player : MonoBehaviour
 
     private void MovePlayer()
     {
+
+        float coef = 1.2f;
+        if (Input.GetKey(KeyCode.LeftShift) && stamina > 0f)
+        {
+            coef = 2.5f;
+            stamina -= Time.deltaTime * 1f;
+        }
+        else
+        {
+            coef = 1f;
+        }
+
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
-        controller.Move(move * speed * Time.deltaTime);
+        controller.Move(move * speed * Time.deltaTime * coef);
 
         velocity.y += gravity * Time.deltaTime;
 
@@ -61,7 +74,14 @@ public class player : MonoBehaviour
         controller.Move(velocity * Time.deltaTime);
 
     }
-
+        private void Stamina()
+            {
+                if (stamina < 1f && !Input.GetKey(KeyCode.LeftShift))
+                {
+                    stamina += Time.deltaTime * 0.5f;
+                }
+                slider.value = stamina;
+            }
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.gameObject.CompareTag("Enemy"))
@@ -86,5 +106,8 @@ public class player : MonoBehaviour
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+
+
+    
 
 }
