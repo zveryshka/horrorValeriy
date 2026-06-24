@@ -13,7 +13,7 @@ public class player : MonoBehaviour
     [SerializeField] Slider slider;
     public float speed = 10f;
     public float gravity = -9.81f;
-    public float mouseSensitivity = 100f;
+    public float mouseSensitivity = 400f;
     public float jumpForce = 0.5f;
     public GameObject screamer;
     public AudioSource screamerSound;
@@ -38,11 +38,11 @@ public class player : MonoBehaviour
     private void MovePlayer()
     {
 
-        float coef = 1.2f;
+        float coef = 2.5f;
         if (Input.GetKey(KeyCode.LeftShift) && stamina > 0f)
         {
             coef = 2.5f;
-            stamina -= Time.deltaTime * 1f;
+            stamina -= Time.deltaTime * 0.1f;
         }
         else
         {
