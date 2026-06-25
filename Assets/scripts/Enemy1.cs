@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class Enemy : MonoBehaviour
+public class Enemy1 : MonoBehaviour
 {
     [Header("References")]
     public Transform player;
@@ -22,12 +22,6 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-
-        if (player == null)
-            player = GameObject.FindGameObjectWithTag("Player").transform;
-
-        agent.Warp(transform.position);
-
         GoToRandomPoint();
     }
 
@@ -90,25 +84,17 @@ public class Enemy : MonoBehaviour
 
     void GoToRandomPoint()
     {
-        for (int i = 0; i < 10; i++)
+        Debug.Log("Шукаю нову точку");
+
+        Vector3 randomPoint = transform.position +
+            new Vector3(Random.Range(-20f, 20f), 0, Random.Range(-20f, 20f));
+
+        NavMeshHit hit;
+
+        if (NavMesh.SamplePosition(randomPoint, out hit, 20f, NavMesh.AllAreas))
         {
-            Vector3 randomDirection =
-                Random.insideUnitSphere * patrolRadius;
-
-            randomDirection += transform.position;
-            randomDirection.y = transform.position.y;
-
-            NavMeshHit hit;
-
-            if (NavMesh.SamplePosition(
-                randomDirection,
-                out hit,
-                5f,
-                NavMesh.AllAreas))
-            {
-                agent.SetDestination(hit.position);
-                return;
-            }
+            Debug.Log("Точка знайдена: " + hit.position);
+            agent.SetDestination(hit.position);
         }
     }
 
@@ -117,5 +103,4 @@ public class Enemy : MonoBehaviour
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, viewDistance);
     }
-    
 }

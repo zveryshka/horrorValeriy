@@ -6,11 +6,17 @@ using UnityEngine.UI;
 
 public class player : MonoBehaviour
 {
-    
+
     CharacterController controller;
     Animator animator;
 
     [SerializeField] Slider slider;
+    [SerializeField] AudioSource footsteps;
+    [SerializeField] AudioClip walkSound;
+    [SerializeField] AudioClip runSound;
+    bool wasRunning;
+
+     float stepTimer;
     public float speed = 10f;
     public float gravity = -9.81f;
     public float mouseSensitivity = 400f;
@@ -20,6 +26,7 @@ public class player : MonoBehaviour
     public float stamina = 1f;
 
 
+
     private Vector3 velocity;
 
     private void Update()
@@ -27,6 +34,7 @@ public class player : MonoBehaviour
         MovePlayer();
         transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime);
         Stamina();
+        Footsteps(Input.GetKey(KeyCode.LeftShift) && stamina > 0f);
     }
 
     private void Awake()
@@ -37,27 +45,45 @@ public class player : MonoBehaviour
 
     private void MovePlayer()
     {
+        float coef = 1f;
+        bool running = false;
 
-        float coef = 2.5f;
         if (Input.GetKey(KeyCode.LeftShift) && stamina > 0f)
         {
             coef = 2.5f;
             stamina -= Time.deltaTime * 0.1f;
-        }
-        else
-        {
-            coef = 1f;
+            running = true;
         }
 
         float moveX = Input.GetAxis("Horizontal");
         float moveZ = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
+
         controller.Move(move * speed * Time.deltaTime * coef);
+   
 
-        velocity.y += gravity * Time.deltaTime;
+        bool isMoving = move.magnitude > 0.1f && controller.isGrounded;
 
-        controller.Move(velocity * Time.deltaTime);
+        if (isMoving)
+        {
+            stepTimer += Time.deltaTime;
+
+            float interval = running ? 0.3f : 0.5f;
+
+            if (stepTimer >= interval)
+            {
+                footsteps.PlayOneShot(
+                    running ? runSound : walkSound
+                );
+
+                stepTimer = 0f;
+            }
+        }
+        else
+        {
+            stepTimer = 0f;
+        }
 
         if (controller.isGrounded)
         {
@@ -72,16 +98,16 @@ public class player : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity * Time.deltaTime);
-
+       
     }
-        private void Stamina()
-            {
-                if (stamina < 1f && !Input.GetKey(KeyCode.LeftShift))
-                {
-                    stamina += Time.deltaTime * 0.5f;
-                }
-                slider.value = stamina;
-            }
+    private void Stamina()
+    {
+        if (stamina < 1f && !Input.GetKey(KeyCode.LeftShift))
+        {
+            stamina += Time.deltaTime * 0.5f;
+        }
+        slider.value = stamina;
+    }
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (hit.gameObject.CompareTag("Enemy"))
@@ -106,8 +132,33 @@ public class player : MonoBehaviour
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
+    void Footsteps(bool running)
+    {
+        float moveX = Input.GetAxisRaw("Horizontal");
+        float moveZ = Input.GetAxisRaw("Vertical");
 
+        bool moving =
+            controller.isGrounded &&
+            (moveX != 0 || moveZ != 0);
 
-    
+        if (!moving)
+        {
+            stepTimer = 0f;
+            return;
+        }
+
+        stepTimer -= Time.deltaTime;
+
+        float delay = running ? 0.25f : 0.45f;
+
+        if (stepTimer <= 0f)
+        {
+            footsteps.PlayOneShot(
+                running ? runSound : walkSound
+            );
+
+            stepTimer = delay;
+        }
+    }
 
 }
