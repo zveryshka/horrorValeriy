@@ -62,14 +62,14 @@ public class player : MonoBehaviour
 
         controller.Move(move * speed * Time.deltaTime * coef);
 
-
         bool isMoving = Mathf.Abs(moveX) > 0.1f || Mathf.Abs(moveZ) > 0.1f;
 
         if (isMoving)
         {
             stepTimer += Time.deltaTime;
 
-            float interval = running ? 0.3f : 0.5f;
+            // більша затримка
+            float interval = running ? 0.5f : 0.8f;
 
             if (stepTimer >= interval)
             {
@@ -84,6 +84,7 @@ public class player : MonoBehaviour
         {
             stepTimer = 0f;
         }
+    
 
         if (controller.isGrounded)
         {
