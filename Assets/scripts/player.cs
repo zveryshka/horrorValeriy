@@ -34,7 +34,7 @@ public class player : MonoBehaviour
         MovePlayer();
         transform.Rotate(Vector3.up * Input.GetAxis("Mouse X") * mouseSensitivity * Time.deltaTime);
         Stamina();
-        Footsteps(Input.GetKey(KeyCode.LeftShift) && stamina > 0f);
+        //Footsteps(Input.GetKey(KeyCode.LeftShift) && stamina > 0f);
     }
 
     private void Awake()
@@ -61,9 +61,9 @@ public class player : MonoBehaviour
         Vector3 move = transform.right * moveX + transform.forward * moveZ;
 
         controller.Move(move * speed * Time.deltaTime * coef);
-   
 
-        bool isMoving = move.magnitude > 0.1f && controller.isGrounded;
+
+        bool isMoving = Mathf.Abs(moveX) > 0.1f || Mathf.Abs(moveZ) > 0.1f;
 
         if (isMoving)
         {
@@ -132,33 +132,6 @@ public class player : MonoBehaviour
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-    void Footsteps(bool running)
-    {
-        float moveX = Input.GetAxisRaw("Horizontal");
-        float moveZ = Input.GetAxisRaw("Vertical");
-
-        bool moving =
-            controller.isGrounded &&
-            (moveX != 0 || moveZ != 0);
-
-        if (!moving)
-        {
-            stepTimer = 0f;
-            return;
-        }
-
-        stepTimer -= Time.deltaTime;
-
-        float delay = running ? 0.25f : 0.45f;
-
-        if (stepTimer <= 0f)
-        {
-            footsteps.PlayOneShot(
-                running ? runSound : walkSound
-            );
-
-            stepTimer = delay;
-        }
-    }
+    
 
 }
