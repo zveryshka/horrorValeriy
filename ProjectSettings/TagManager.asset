@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Enemy
   - Voodoo
+  - VoodoO
   layers:
   - Default
   - TransparentFX

@@ -122,6 +122,11 @@ public class player : MonoBehaviour
         {
             StartCoroutine(Death());
         }
+
+        if (other.CompareTag("Finish"))
+        {
+            Win();
+        }
     }
 
     IEnumerator Death()
@@ -133,6 +138,21 @@ public class player : MonoBehaviour
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
-    
+
+    public GameObject winCanvas;
+
+    void Win()
+    {
+        winCanvas.SetActive(true);
+
+        Cursor.lockState =
+            CursorLockMode.None;
+
+        Cursor.visible =
+            true;
+
+        Time.timeScale = 0f;
+    }
+
 
 }

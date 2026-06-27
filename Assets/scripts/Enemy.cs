@@ -3,6 +3,7 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour
 {
+
     [Header("References")]
     public Transform player;
     private NavMeshAgent agent;
@@ -17,22 +18,22 @@ public class Enemy : MonoBehaviour
     public float patrolWaitTime = 2f;
 
     private bool chasingPlayer;
+    public float speed = 150f;
     private float waitTimer;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-
-        if (player == null)
-            player = GameObject.FindGameObjectWithTag("Player").transform;
-
+        if (player == null) player = GameObject.FindGameObjectWithTag("Player").transform;
+        agent.speed = 150f; // Встановлюємо початкову швидкість
         agent.Warp(transform.position);
-
         GoToRandomPoint();
     }
 
+
     void Update()
     {
+        agent.speed = speed;
         if (CanSeePlayer())
         {
             chasingPlayer = true;

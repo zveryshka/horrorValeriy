@@ -16909,6 +16909,7 @@ MonoBehaviour:
   screamer: {fileID: 1915623114}
   screamerSound: {fileID: 1915623119}
   stamina: 1
+  winCanvas: {fileID: 0}
 --- !u!143 &613997138
 CharacterController:
   m_ObjectHideFlags: 0
@@ -62117,6 +62118,7 @@ MonoBehaviour:
     m_Bits: 0
   patrolRadius: 20
   patrolWaitTime: 0.1
+  speed: 150
 --- !u!82 &1127093541548377875
 AudioSource:
   m_ObjectHideFlags: 0
